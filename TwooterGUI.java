@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class TwooterGUI implements ActionListener
+public class TwooterGUI
 {
     private GridLayout grid = new GridLayout();
     private int xSize = 8;
@@ -12,20 +12,31 @@ public class TwooterGUI implements ActionListener
     private JFrame window;
     private JPanel panel;
     private JTextField usernameBox;
-    private String windowName = "Twooter";
+    private String currentToken;
+    private String currentUsername;
 
-    public TwooterGUI()
+    public TwooterGUI(Twooter twooter)
     {
-        window = new JFrame();
+        window = new JFrame("Twooter");
         panel = new JPanel();
         grid = new GridLayout(xSize, ySize);
         usernameBox = new JTextField();
         submit = new JButton("Submit");
-        submit.addActionListener(this);
+        submit.addActionListener(twooter);
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setupLoginWindow();
+    }
+
+    public String getCurrentUsername()
+    {
+        return currentUsername;
+    }
+
+    public String getCurrentToken()
+    {
+        return currentToken;
     }
 
     public void setupLoginWindow()
@@ -34,15 +45,8 @@ public class TwooterGUI implements ActionListener
         panel.setLayout(grid);
         panel.add(usernameBox);
         panel.add(submit);
-        window.setTitle(windowName);
+        //window.setTitle(windowName);
         window.setSize(800,800);
         window.setVisible(true);
     }
-
-    
-    public void actionPerformed(ActionEvent e)
-    {
-        System.out.println(usernameBox.getText());
-    }
-    
 }

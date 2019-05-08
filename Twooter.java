@@ -1,11 +1,25 @@
 import twooter.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-public class Twooter
+public class Twooter implements ActionListener
 {
-    public static void main(String[] args)
+    private TwooterClient client;
+    private TwooterGUI gui;
+    private TwooterCode code;
+    public Twooter()
     {
-        TwooterClient test = new TwooterClient();
-        TwooterGUI gui = new TwooterGUI();
-        TwooterCode code = new TwooterCode(test);
+        client = new TwooterClient();
+        gui = new TwooterGUI(this);
+        code = new TwooterCode(client);
     }
+
+    public void actionPerformed(ActionEvent e)
+    {
+        String username;
+        username = gui.getCurrentUsername();
+        System.out.println(username);
+    }
+    
 }

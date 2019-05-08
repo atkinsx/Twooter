@@ -4,20 +4,23 @@ public class TwooterCode
 {
     public TwooterCode(TwooterClient client)
     {
-        String idk;
+        String token;
+        String name;
         System.out.println("Hello world");
 
         client.enableLiveFeed();
 
         double rand = Math.random() * 100000;
         int no = (int) rand;
-        String name = "UserNo" + no;
+        name = "UserNo" + no;
         
         
         try
         {
-            idk = client.registerName(name);
-            System.out.println(idk + ": " + name);
+            token = client.registerName(name);
+            System.out.println(token + ": " + name);
+
+            client.postMessage(token, name, "???");
         }
         catch(Exception e)
         {
