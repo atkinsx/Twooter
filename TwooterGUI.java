@@ -29,6 +29,11 @@ public class TwooterGUI
         setupLoginWindow();
     }
 
+    public void setCurrentUsername()
+    {
+        currentUsername = usernameBox.getText();
+    }
+
     public String getCurrentUsername()
     {
         return currentUsername;
