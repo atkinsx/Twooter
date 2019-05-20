@@ -19,14 +19,10 @@ public class Twooter implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-        //https://www.homeandlearn.co.uk/java/java_and_databases.html
         String username;
         gui.setCurrentUsername();
         username = gui.getCurrentUsername();
-        //System.out.println(username);
         String token = code.createUser(client, username);
-
-        //if username does not exist
 
         try
         {

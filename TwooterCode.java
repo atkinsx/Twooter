@@ -18,10 +18,6 @@ public class TwooterCode
         // int no = (int) rand;
         // name = "UserNo" + no;
         
-        
-        
-        
-        
         readMessages(client);
     }
 
@@ -35,9 +31,18 @@ public class TwooterCode
         try
         {
             token = client.registerName(username);
-            System.out.println(token + ": " + username);
+            
+            if (token != null)
+            //if (!client.isActiveName(username) && username.length() > 4 && username.length() < 33)
+            {
+                System.out.println("Token: " + token);
+                System.out.println("Username: " + username);
+            }
+            else
+            {
+                System.out.println("The username is already taken or is invalid.");
+            }
 
-            //client.postMessage(token, username, "???");
             return token;
         }
         catch(Exception e)
@@ -64,19 +69,18 @@ public class TwooterCode
         
         FileWriter newFile = new FileWriter(txtFile, false);
         BufferedWriter printFile = new BufferedWriter(newFile);
-        //PrintWriter printFile = new PrintWriter(newFile);
         printFile.write(tokenString);
 
         printFile.close();
     }
 
+    public void postMessage(TwooterClient client)
+    {
+        //client.postMessage(token, name, "Please don't read this... :(");
+    }
 
     public void readMessages(TwooterClient client)
     {
-        //https://apod.nasa.gov/apod/archivepix.html
-        //https://apod.nasa.gov/apod/ap190519.html
-        //https://apod.nasa.gov/apod/ap190512.html
-
         try
         {
             Message[] test = client.getMessages();
