@@ -27,6 +27,11 @@ public class TwooterGUI
         setupLoginWindow();
     }
 
+    public JButton getSubmit()
+    {
+        return submit;
+    }
+
     public String getInputUsername()
     {
         return usernameBox.getText();
@@ -43,7 +48,6 @@ public class TwooterGUI
         panel.setLayout(grid);
         panel.add(usernameBox);
         panel.add(submit);
-        //window.setTitle(windowName);
         window.setSize(800,800);
         window.setVisible(true);
     }

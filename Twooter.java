@@ -29,6 +29,18 @@ public class Twooter implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
+        if (e.getSource() == gui.getSubmit())
+        {
+            submitLogin();
+        }
+        else
+        {
+            System.out.println("NO");
+        }
+    }
+
+    public void submitLogin()
+    {
         username = gui.getInputUsername();
         token = getToken();
 
@@ -47,9 +59,9 @@ public class Twooter implements ActionListener
                 System.out.println(username);
                 System.out.println(token);
             }
-            catch (IOException event)
+            catch (IOException e)
             {
-                System.out.println("Some Kinda Error: " + event.getMessage());
+                System.out.println("Some Kinda Error: " + e.getMessage());
             }
         }
     }
@@ -79,9 +91,9 @@ public class Twooter implements ActionListener
 
             return output;
         }
-        catch (IOException event)
+        catch (IOException e)
         {
-            System.out.println("Check Error: " + event.getMessage());
+            System.out.println("Check Error: " + e.getMessage());
             return null;
         }
     }
@@ -98,9 +110,9 @@ public class Twooter implements ActionListener
 
             printFile.close();
         }
-        catch (IOException event)
+        catch (IOException e)
         {
-            System.out.println("Creation Error: " + event.getMessage());
+            System.out.println("Creation Error: " + e.getMessage());
         }
     }
 
@@ -111,7 +123,6 @@ public class Twooter implements ActionListener
             token = client.registerName(username);
             
             if (token != null)
-            //if (!client.isActiveName(username) && username.length() > 4 && username.length() < 33)
             {
                 System.out.println("Token: " + token);
                 System.out.println("Username: " + username);
@@ -130,25 +141,18 @@ public class Twooter implements ActionListener
         }
     }
 
-    // public String readFromFile(String type) throws IOException
-    // {
-    //     txtFile = type + ".txt";
-    //     FileReader fileReader = new FileReader(txtFile);
-    //     BufferedReader textReader = new BufferedReader(fileReader);
-    //     String output = textReader.readLine();
-
-    //     textReader.close();
-    //     return output;
-    // }
-
-    // public void writeToFile(String type, String input) throws IOException
-    // {
-        
-    // }
-
-    public void postMessage()
+    public void sendMessage()
     {
-        //client.postMessage(token, name, "Please don't read this... :(");
+        String newMessage = "";
+
+        try
+        {
+            client.postMessage(token, username, newMessage);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
     }
 
     public void readMessages()
@@ -160,9 +164,9 @@ public class Twooter implements ActionListener
             for (int i = 0; i < test.length; i++)
                 System.out.println(test[i].message);
         }
-        catch (IOException event)
+        catch (IOException e)
         {
-            System.out.println("Read Error: " + event.getMessage());
+            System.out.println("Read Error: " + e.getMessage());
         }
     }
 
