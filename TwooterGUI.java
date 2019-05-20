@@ -12,8 +12,6 @@ public class TwooterGUI
     private JFrame window;
     private JPanel panel;
     private JTextField usernameBox;
-    private String currentToken;
-    private String currentUsername;
 
     public TwooterGUI(Twooter twooter)
     {
@@ -29,19 +27,14 @@ public class TwooterGUI
         setupLoginWindow();
     }
 
-    public void setCurrentUsername()
+    public String getInputUsername()
     {
-        currentUsername = usernameBox.getText();
+        return usernameBox.getText();
     }
 
-    public String getCurrentUsername()
+    public void setInputUsername(String input)
     {
-        return currentUsername;
-    }
-
-    public String getCurrentToken()
-    {
-        return currentToken;
+        usernameBox.setText(input);
     }
 
     public void setupLoginWindow()

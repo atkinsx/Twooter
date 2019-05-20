@@ -18,7 +18,7 @@ public class TwooterCode
         // int no = (int) rand;
         // name = "UserNo" + no;
         
-        readMessages(client);
+        //readMessages(client);
     }
 
     public void setName(String input)
@@ -40,7 +40,7 @@ public class TwooterCode
             }
             else
             {
-                System.out.println("The username is already taken or is invalid.");
+                System.out.println("The username is already taken. Confirming this user is you...");
             }
 
             return token;
