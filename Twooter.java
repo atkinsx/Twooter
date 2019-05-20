@@ -33,6 +33,10 @@ public class Twooter implements ActionListener
         {
             submitLogin();
         }
+        else if (e.getSource() == gui.getSend())
+        {
+            sendMessage();
+        }
         else
         {
             System.out.println("NO");
@@ -143,11 +147,12 @@ public class Twooter implements ActionListener
 
     public void sendMessage()
     {
-        String newMessage = "";
+        String newMessage = gui.getInputMessage();
 
         try
         {
             client.postMessage(token, username, newMessage);
+            System.out.println(token + " / " + username + ": " + newMessage);
         }
         catch(Exception e)
         {
