@@ -191,7 +191,9 @@ public class Twooter implements ActionListener, UpdateListener
     public void handleUpdate(TwooterEvent e)
     {
         System.out.println("Getting messages...");
+        gui.getMessagesPanel().setVisible(false);
         retrieveMessages();
+        gui.getMessagesPanel().setVisible(true);
     }
     
 }

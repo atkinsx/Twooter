@@ -7,8 +7,12 @@ public class TwooterGUI
 {
     private static final int MAX_MESSAGES = 30;
 
-    private BoxLayout layout;
-    private BoxLayout layout2;
+    private Font f = new Font("Engravers MT", Font.PLAIN, 40);
+
+    private BoxLayout layoutUP;
+    private BoxLayout layoutMP;
+    private BoxLayout layoutIP;
+    private BoxLayout layoutPP;
 
     private GridLayout grid;
     private int xSize = 8;
@@ -22,6 +26,8 @@ public class TwooterGUI
     private JPanel loginPanel;
     private JPanel usersPanel;
     private JPanel messagesPanel;
+    private JPanel inputPanel;
+    private JPanel postPanel;
 
     private JScrollPane messageList;
     private JScrollPane userList;
@@ -39,9 +45,11 @@ public class TwooterGUI
         loginPanel = new JPanel();
         usersPanel = new JPanel();
         messagesPanel = new JPanel();
+        inputPanel = new JPanel();
+        postPanel = new JPanel();
 
         userList = new JScrollPane(usersPanel);
-        messageList = new JScrollPane(messagesPanel);
+        messageList = new JScrollPane(postPanel);
         main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userList, messageList);
 
         grid = new GridLayout(xSize, ySize);
@@ -50,18 +58,25 @@ public class TwooterGUI
         send = new JButton("Send");
         submit = new JButton("Submit");
 
-        layout = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
-        layout2 = new BoxLayout(messagesPanel, BoxLayout.Y_AXIS);
+        layoutUP = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
+        layoutMP = new BoxLayout(messagesPanel, BoxLayout.Y_AXIS);
+        layoutIP = new BoxLayout(inputPanel, BoxLayout.Y_AXIS);
+        layoutPP = new BoxLayout(postPanel, BoxLayout.Y_AXIS);
 
-        usersPanel.setLayout(layout);
-        messagesPanel.setLayout(layout2);
+        usersPanel.setLayout(layoutUP);
+        messagesPanel.setLayout(layoutMP);
+        inputPanel.setLayout(layoutIP);
+        postPanel.setLayout(layoutPP);
 
-        messagesPanel.add(messageBox);
-        messagesPanel.add(send);
+        postPanel.add(messageBox);
+        messageBox.setPreferredSize( new Dimension( 200, 240 ) );
+        messageBox.setFont(f);
+        postPanel.add(send);
+        postPanel.add(inputPanel);
+        postPanel.add(messagesPanel);
 
         send.addActionListener(twooter);
         submit.addActionListener(twooter);
-        buttons[0].addActionListener(twooter); //GARBO
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -85,7 +100,9 @@ public class TwooterGUI
 
     public String getInputMessage()
     {
-        return messageBox.getText();
+        String output = messageBox.getText();
+        messageBox.setText(null);
+        return output;
     }
 
     public String getInputUsername()
@@ -118,17 +135,33 @@ public class TwooterGUI
 
     public void outputMessageStream(int i, String message, String username)
     {
-        messagesPanel.remove(messages[i]);
-        messages[i].setText(i + ") " + username + ": " + message);
-        messages[i].setLineWrap(true);
-        //Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
-        messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        messagesPanel.add(messages[i]);
+        String newText = i + ") " + username + ": " + message;
+        if (!newText.equals(messages[i].getText()))
+        {
+            if (i == 27)
+            {
+                System.out.println("NEW MESSAGES: " + newText + " != " + messages[i].getText());
+            }
+            messagesPanel.remove(messages[i]);
+            messages[i].setText(newText);
+            messages[i].setLineWrap(true);
+            messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            messagesPanel.add(messages[i]);
+        }
+        // else
+        // {
+        //     System.out.println("OLD MESSAGES: " + newText + " == " + messages[i].getText());
+        // }
     }
 
-    public void getButton(int index)
+    public JPanel getMessagesPanel()
     {
-        return buttons(i);
+        return messagesPanel;
+    }
+
+    public JButton getButton(int index)
+    {
+        return buttons[index];
     }
 
     public void madness()
