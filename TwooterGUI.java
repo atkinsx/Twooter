@@ -5,25 +5,59 @@ import javax.swing.*;
 
 public class TwooterGUI
 {
-    private GridLayout grid = new GridLayout();
+    private static final int MAX_MESSAGES = 30;
+
+    private BoxLayout layout;
+    private BoxLayout layout2;
+
+    private GridLayout grid;
     private int xSize = 8;
     private int ySize = 1;
+
     private JButton send;
     private JButton submit;
+
     private JFrame window;
-    private JPanel panel;
+
+    private JPanel loginPanel;
+    private JPanel usersPanel;
+    private JPanel messagesPanel;
+
+    private JScrollPane messageList;
+    private JScrollPane userList;
+    private JSplitPane main;
+
+    private JLabel[] messages = new JLabel[MAX_MESSAGES];
     private JTextField messageBox;
     private JTextField usernameBox;
+
+    private JButton buttons[] = new JButton[50];
 
     public TwooterGUI(Twooter twooter)
     {
         window = new JFrame("Twooter");
-        panel = new JPanel();
+        loginPanel = new JPanel();
+        usersPanel = new JPanel();
+        messagesPanel = new JPanel();
+
+        userList = new JScrollPane(usersPanel);
+        messageList = new JScrollPane(messagesPanel);
+        main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userList, messageList);
+
         grid = new GridLayout(xSize, ySize);
         messageBox = new JTextField();
         usernameBox = new JTextField();
         send = new JButton("Send");
         submit = new JButton("Submit");
+
+        layout = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
+        layout2 = new BoxLayout(messagesPanel, BoxLayout.Y_AXIS);
+
+        usersPanel.setLayout(layout);
+        messagesPanel.setLayout(layout2);
+
+        messagesPanel.add(messageBox);
+        messagesPanel.add(send);
 
         send.addActionListener(twooter);
         submit.addActionListener(twooter);
@@ -60,13 +94,36 @@ public class TwooterGUI
 
     public void setupLoginWindow()
     {
-        window.setContentPane(panel);
-        panel.setLayout(grid);
-        panel.add(messageBox);
-        panel.add(usernameBox);
-        panel.add(send);
-        panel.add(submit);
+        window.add(loginPanel);
+        loginPanel.setLayout(grid);
+        loginPanel.add(usernameBox);
+        loginPanel.add(submit);
         window.setSize(800,800);
         window.setVisible(true);
+    }
+
+    public void setupMainWindow()
+    {
+        window.add(main);
+        main.setResizeWeight(0.1);
+        loginPanel.setVisible(false);
+        madness();
+    }
+
+    public void outputMessageStream(int i, String message, String username)
+    {
+        messages[i] = new JLabel("<html>" + i + ") " + username + ": " + message + "</html>");
+        //Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
+        messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        messagesPanel.add(messages[i]);
+    }
+
+    public void madness()
+    {
+        for (int i = 0; i < 50; i++)
+        {
+            buttons[i] = new JButton("text" + i);
+            usersPanel.add(buttons[i]);
+        }
     }
 }

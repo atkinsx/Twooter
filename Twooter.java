@@ -4,19 +4,21 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 
-public class Twooter implements ActionListener
+public class Twooter implements ActionListener, UpdateListener
 {
+    private static final int MAX_MESSAGES = 30;
+
     private TwooterClient client;
     private TwooterGUI gui;
     private String username;
     private String token;
     private String txtFile;
 
-
     public Twooter()
     {
         client = new TwooterClient();
         gui = new TwooterGUI(this);
+        client.addUpdateListener(this);
         boolean isLoggedIn = checkForFile();
 
         if (isLoggedIn)
@@ -32,6 +34,9 @@ public class Twooter implements ActionListener
         if (e.getSource() == gui.getSubmit())
         {
             submitLogin();
+            client.enableLiveFeed();
+            gui.setupMainWindow();
+            retrieveMessages();
         }
         else if (e.getSource() == gui.getSend())
         {
@@ -160,14 +165,17 @@ public class Twooter implements ActionListener
         }
     }
 
-    public void readMessages()
+    public void retrieveMessages()
     {
         try
         {
             Message[] test = client.getMessages();
 
-            for (int i = 0; i < test.length; i++)
-                System.out.println(test[i].message);
+            for (int i = 0; i < MAX_MESSAGES; i++)
+                {
+                    System.out.println(test[i].message);
+                    gui.outputMessageStream(i, test[i].message, test[i].name);
+                }
         }
         catch (IOException e)
         {
@@ -178,6 +186,11 @@ public class Twooter implements ActionListener
     public void close()
     {
         client.disableLiveFeed();
+    }
+
+    public void handleUpdate(TwooterEvent e)
+    {
+        retrieveMessages();
     }
     
 }
