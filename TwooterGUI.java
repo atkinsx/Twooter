@@ -7,7 +7,8 @@ public class TwooterGUI
 {
     private static final int MAX_MESSAGES = 30;
 
-    private Font f = new Font("Engravers MT", Font.PLAIN, 40);
+    private Font inputFont = new Font("Arial", Font.PLAIN, 40);
+    private Font messageFont = new Font("Arial", Font.PLAIN, 18);
 
     private BoxLayout layoutUP;
     private BoxLayout layoutMP;
@@ -69,8 +70,8 @@ public class TwooterGUI
         postPanel.setLayout(layoutPP);
 
         postPanel.add(messageBox);
-        messageBox.setPreferredSize( new Dimension( 200, 240 ) );
-        messageBox.setFont(f);
+        messageBox.setPreferredSize(new Dimension(500, 250));
+        messageBox.setFont(inputFont);
         postPanel.add(send);
         postPanel.add(inputPanel);
         postPanel.add(messagesPanel);
@@ -121,6 +122,7 @@ public class TwooterGUI
         loginPanel.setLayout(grid);
         loginPanel.add(usernameBox);
         loginPanel.add(submit);
+        usernameBox.setFont(inputFont);
         window.setSize(800,800);
         window.setVisible(true);
     }
@@ -135,23 +137,39 @@ public class TwooterGUI
 
     public void outputMessageStream(int i, String message, String username)
     {
-        String newText = i + ") " + username + ": " + message;
-        if (!newText.equals(messages[i].getText()))
-        {
-            if (i == 27)
-            {
-                System.out.println("NEW MESSAGES: " + newText + " != " + messages[i].getText());
-            }
-            messagesPanel.remove(messages[i]);
+        String newText = username + ": " + message;
+        //String newText = i + ") " + username + ": " + message;
+        //if (!newText.equals(messages[i].getText()))
+        //{
+            // if (i == 27)
+            // {
+            //     System.out.println("NEW MESSAGES: " + newText + " != " + messages[i].getText());
+            // }
+            //messagesPanel.remove(messages[i]);
             messages[i].setText(newText);
             messages[i].setLineWrap(true);
             messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            messages[i].setFont(messageFont);
             messagesPanel.add(messages[i]);
-        }
+        //}
         // else
         // {
         //     System.out.println("OLD MESSAGES: " + newText + " == " + messages[i].getText());
         // }
+    }
+
+    public boolean isNewMessage(String inputMessage, String inputUsername)
+    {
+        String latestMessage = inputUsername + ": " + inputMessage;
+        if (latestMessage.equals(messages[0].getText()))
+        {
+            return false;
+        }
+        else
+        {
+            System.out.println(latestMessage + " != " + messages[0].getText());
+            return true;
+        }
     }
 
     public JPanel getMessagesPanel()
@@ -162,6 +180,11 @@ public class TwooterGUI
     public JButton getButton(int index)
     {
         return buttons[index];
+    }
+
+    public void alert(String error, String title)
+    {
+        JOptionPane.showMessageDialog(null, error, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void madness()

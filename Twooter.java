@@ -10,6 +10,7 @@ public class Twooter implements ActionListener, UpdateListener
 
     private TwooterClient client;
     private TwooterGUI gui;
+    private Message[] listOfMessages;
     private String username;
     private String token;
     private String txtFile;
@@ -33,10 +34,18 @@ public class Twooter implements ActionListener, UpdateListener
     {
         if (e.getSource() == gui.getSubmit())
         {
-            submitLogin();
-            gui.setupMainWindow();
-            retrieveMessages();
-            client.enableLiveFeed();
+            if (checkIfIsUp())
+            {
+                submitLogin();
+                gui.setupMainWindow();
+                updateMessagesList();
+                retrieveMessages();
+                client.enableLiveFeed();
+            }
+            else
+            {
+                //
+            }
         }
         else if (e.getSource() == gui.getSend())
         {
@@ -55,6 +64,8 @@ public class Twooter implements ActionListener, UpdateListener
 
         if (token != null)
         {
+            gui.alert("Username ''" + username + "' doesn't exist. Creating new user...", "NO USER FOUND");
+
             createNewFile("username", username);
             createNewFile("token", token);
         }
@@ -167,19 +178,9 @@ public class Twooter implements ActionListener, UpdateListener
 
     public void retrieveMessages()
     {
-        try
+        for (int i = 0; i < MAX_MESSAGES; i++)
         {
-            Message[] test = client.getMessages();
-
-            for (int i = 0; i < MAX_MESSAGES; i++)
-                {
-                    //System.out.println(test[i].message);
-                    gui.outputMessageStream(i, test[i].message, test[i].name);
-                }
-        }
-        catch (IOException e)
-        {
-            System.out.println("Read Error: " + e.getMessage());
+            gui.outputMessageStream(i, listOfMessages[i].message, listOfMessages[i].name);
         }
     }
 
@@ -188,12 +189,48 @@ public class Twooter implements ActionListener, UpdateListener
         client.disableLiveFeed();
     }
 
+    public void updateMessagesList()
+    {
+        try
+        {
+            listOfMessages = client.getMessages();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Read Error: " + e.getMessage());
+        }
+    }
+
     public void handleUpdate(TwooterEvent e)
     {
+        updateMessagesList();
+
         System.out.println("Getting messages...");
-        gui.getMessagesPanel().setVisible(false);
-        retrieveMessages();
-        gui.getMessagesPanel().setVisible(true);
+        if (gui.isNewMessage(listOfMessages[0].message, listOfMessages[0].name))
+        {
+            gui.getMessagesPanel().setVisible(false);
+            retrieveMessages();
+            gui.getMessagesPanel().setVisible(true);
+        }
+        else
+        {
+            System.out.println("No new messages.");
+        }
     }
     
+    public boolean checkIfIsUp()
+    {
+        boolean result = false;
+
+        try
+        {
+            result = client.isUp();
+        }
+        catch(IOException e)
+        {
+            System.out.println("Read Error: " + e.getMessage());
+        }
+
+        return result;
+    }
 }
