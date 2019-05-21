@@ -34,9 +34,9 @@ public class Twooter implements ActionListener, UpdateListener
         if (e.getSource() == gui.getSubmit())
         {
             submitLogin();
-            client.enableLiveFeed();
             gui.setupMainWindow();
             retrieveMessages();
+            client.enableLiveFeed();
         }
         else if (e.getSource() == gui.getSend())
         {
@@ -173,7 +173,7 @@ public class Twooter implements ActionListener, UpdateListener
 
             for (int i = 0; i < MAX_MESSAGES; i++)
                 {
-                    System.out.println(test[i].message);
+                    //System.out.println(test[i].message);
                     gui.outputMessageStream(i, test[i].message, test[i].name);
                 }
         }
@@ -190,6 +190,7 @@ public class Twooter implements ActionListener, UpdateListener
 
     public void handleUpdate(TwooterEvent e)
     {
+        System.out.println("Getting messages...");
         retrieveMessages();
     }
     

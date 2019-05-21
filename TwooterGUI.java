@@ -27,7 +27,7 @@ public class TwooterGUI
     private JScrollPane userList;
     private JSplitPane main;
 
-    private JLabel[] messages = new JLabel[MAX_MESSAGES];
+    private JTextArea[] messages = new JTextArea[MAX_MESSAGES];
     private JTextField messageBox;
     private JTextField usernameBox;
 
@@ -61,10 +61,16 @@ public class TwooterGUI
 
         send.addActionListener(twooter);
         submit.addActionListener(twooter);
+        buttons[0].addActionListener(twooter); //GARBO
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setupLoginWindow();
+
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+            messages[i] = new JTextArea();
+        }
     }
 
     public JButton getSend()
@@ -112,10 +118,17 @@ public class TwooterGUI
 
     public void outputMessageStream(int i, String message, String username)
     {
-        messages[i] = new JLabel("<html>" + i + ") " + username + ": " + message + "</html>");
+        messagesPanel.remove(messages[i]);
+        messages[i].setText(i + ") " + username + ": " + message);
+        messages[i].setLineWrap(true);
         //Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
         messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
         messagesPanel.add(messages[i]);
+    }
+
+    public void getButton(int index)
+    {
+        return buttons(i);
     }
 
     public void madness()
