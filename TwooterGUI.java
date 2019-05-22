@@ -175,7 +175,7 @@ public class TwooterGUI
         messages[i].setLineWrap(true);
         messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
         messages[i].setFont(messageFont);
-
+        messages[i].setVisible(true);
         messagesPanel.add(messages[i]);
 
         if (i == MAX_MESSAGES - 1)
@@ -256,15 +256,35 @@ public class TwooterGUI
 
     public void filterMessages()
     {
+        int count = 0;
+
         for (int i = 0; i < MAX_MESSAGES; i++)
         {
+            messages[i].setVisible(true);
+
             if (!messages[i].getText().contains(messageBox.getText()))
             {
                 messages[i].setVisible(false);
+                count++;
             }
-
-            messageBox.setText(null);
+            else
+            {
+                System.out.println(messages[i].getText());
+            }
         }
+
+        messageBox.setText(null);
+
+        if (count == MAX_MESSAGES)
+        {
+            alert("No results for that query", "No results");
+
+            for (int i = 0; i < MAX_MESSAGES; i++)
+            {
+                messages[i].setVisible(true);
+            }
+        }
+
     }
 
     public void printSearchQuery()
