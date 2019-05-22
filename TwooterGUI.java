@@ -8,16 +8,13 @@ public class TwooterGUI
     private static final int MAX_MESSAGES = 30;
 
     private Font inputFont = new Font("Arial", Font.PLAIN, 40);
+    private Font buttonFont = new Font("Arial", Font.PLAIN, 24);
     private Font messageFont = new Font("Arial", Font.PLAIN, 18);
 
     private BoxLayout layoutUP;
     private BoxLayout layoutMP;
     private BoxLayout layoutIP;
     private BoxLayout layoutPP;
-
-    private GridLayout grid;
-    private int xSize = 8;
-    private int ySize = 1;
 
     private JButton send;
     private JButton submit;
@@ -34,11 +31,11 @@ public class TwooterGUI
     private JScrollPane userList;
     private JSplitPane main;
 
-    private JTextArea[] messages = new JTextArea[MAX_MESSAGES];
+    private JTextArea[] messages;
     private JTextField messageBox;
     private JTextField usernameBox;
 
-    private JButton buttons[] = new JButton[50];
+    private JButton[] users;
 
     public TwooterGUI(Twooter twooter)
     {
@@ -53,11 +50,11 @@ public class TwooterGUI
         messageList = new JScrollPane(postPanel);
         main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userList, messageList);
 
-        grid = new GridLayout(xSize, ySize);
         messageBox = new JTextField();
         usernameBox = new JTextField();
         send = new JButton("Send");
         submit = new JButton("Submit");
+        submit.setFont(buttonFont);
 
         layoutUP = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
         layoutMP = new BoxLayout(messagesPanel, BoxLayout.Y_AXIS);
@@ -70,11 +67,14 @@ public class TwooterGUI
         postPanel.setLayout(layoutPP);
 
         postPanel.add(messageBox);
-        messageBox.setPreferredSize(new Dimension(500, 250));
+        messageBox.setPreferredSize(new Dimension(700, 250));
         messageBox.setFont(inputFont);
         postPanel.add(send);
         postPanel.add(inputPanel);
         postPanel.add(messagesPanel);
+
+        messages = new JTextArea[MAX_MESSAGES];
+        users = new JButton[MAX_MESSAGES];
 
         send.addActionListener(twooter);
         submit.addActionListener(twooter);
@@ -86,6 +86,8 @@ public class TwooterGUI
         for (int i = 0; i < MAX_MESSAGES; i++)
         {
             messages[i] = new JTextArea();
+            users[i] = new JButton("empty");
+            users[i].addActionListener(twooter);
         }
     }
 
@@ -118,44 +120,57 @@ public class TwooterGUI
 
     public void setupLoginWindow()
     {
+        JLabel title = new JLabel("twooter");
+        JLabel subtitle = new JLabel("profeshanul soshul meedeeuh for scc.110");
+        Font titleFont = new Font("Comic Sans", Font.PLAIN, 150);
+        Font subtitleFont = new Font("Comic Sans", Font.PLAIN, 50);
+
+        title.setFont(titleFont);
+        subtitle.setFont(subtitleFont);
+
         window.add(loginPanel);
-        loginPanel.setLayout(grid);
+        loginPanel.setLayout(new GridLayout(6, 1));
+        loginPanel.add(title);
+        loginPanel.add(subtitle);
         loginPanel.add(usernameBox);
         loginPanel.add(submit);
         usernameBox.setFont(inputFont);
-        window.setSize(800,800);
+        window.setSize(1000,1000);
         window.setVisible(true);
     }
 
     public void setupMainWindow()
     {
         window.add(main);
+        messageList.getVerticalScrollBar().setUnitIncrement(20);
         main.setResizeWeight(0.1);
         loginPanel.setVisible(false);
-        madness();
+        //getUsers();
     }
 
     public void outputMessageStream(int i, String message, String username)
     {
+        if (i == 0)
+        {
+            messagesPanel.setVisible(false);
+        }
+
+        if (message.length() > 500)
+        {
+            message = "Normally I don't condone censorship, but that wall of text was probably an image, and I'm not competent enough to know how to show you images. But if it makes you feel any better, it was probably very pretty or funny or cool or something.";
+        }
+
         String newText = username + ": " + message;
-        //String newText = i + ") " + username + ": " + message;
-        //if (!newText.equals(messages[i].getText()))
-        //{
-            // if (i == 27)
-            // {
-            //     System.out.println("NEW MESSAGES: " + newText + " != " + messages[i].getText());
-            // }
-            //messagesPanel.remove(messages[i]);
-            messages[i].setText(newText);
-            messages[i].setLineWrap(true);
-            messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            messages[i].setFont(messageFont);
-            messagesPanel.add(messages[i]);
-        //}
-        // else
-        // {
-        //     System.out.println("OLD MESSAGES: " + newText + " == " + messages[i].getText());
-        // }
+        messages[i].setText(newText);
+        messages[i].setLineWrap(true);
+        messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        messages[i].setFont(messageFont);
+        messagesPanel.add(messages[i]);
+
+        if (i == MAX_MESSAGES - 1)
+        {
+            messagesPanel.setVisible(true);
+        }
     }
 
     public boolean isNewMessage(String inputMessage, String inputUsername)
@@ -167,7 +182,7 @@ public class TwooterGUI
         }
         else
         {
-            System.out.println(latestMessage + " != " + messages[0].getText());
+            //System.out.println(latestMessage + " != " + messages[0].getText());
             return true;
         }
     }
@@ -177,22 +192,54 @@ public class TwooterGUI
         return messagesPanel;
     }
 
-    public JButton getButton(int index)
-    {
-        return buttons[index];
-    }
+    // public JButton getUser(int index)
+    // {
+    //     return users[index];
+    // }
 
     public void alert(String error, String title)
     {
         JOptionPane.showMessageDialog(null, error, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void madness()
+    public void listUsers(int index, String username)
     {
-        for (int i = 0; i < 50; i++)
+        if (index == 0)
         {
-            buttons[i] = new JButton("text" + i);
-            usersPanel.add(buttons[i]);
+            usersPanel.setVisible(false);
+        }
+
+        usersPanel.remove(users[index]);
+        //users[index].setText(username);
+        users[index].setBackground(Color.WHITE);
+        //users[i].setVisible(false);
+        int i = 0;
+        boolean isValid = true;
+
+        while (!users[i].getText().equals("empty") && isValid)
+        {
+            System.out.println(username + ": " + i);
+            if(username.equals(users[i].getText()) || i >= MAX_MESSAGES)
+            {
+                isValid = false;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        if (users[i].getText().equals("empty") && isValid)
+        {
+            System.out.println(username + ": " + i);
+            users[i].setText(username);
+        }
+
+        usersPanel.add(users[index]);
+
+        if (index == MAX_MESSAGES - 1)
+        {
+            usersPanel.setVisible(true);
         }
     }
 }
