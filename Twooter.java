@@ -20,7 +20,7 @@ public class Twooter implements ActionListener, UpdateListener
         client = new TwooterClient();
         gui = new TwooterGUI(this);
         client.addUpdateListener(this);
-        boolean isLoggedIn = checkForFile();
+        boolean isLoggedIn = checkForFile("username") && checkForFile("token");
 
         if (isLoggedIn)
         {
@@ -56,9 +56,45 @@ public class Twooter implements ActionListener, UpdateListener
         {
             gui.filterMessages();
         }
+        else if (e.getSource() == gui.getHome())
+        {
+            updateMessagesList();
+            retrieveMessages();
+            getUsers();
+        }
+        else if (e.getSource() == gui.getFollow())
+        {
+            String userToFollow = gui.getSelectedUsername();
+
+            if (userToFollow != null)
+            {
+                followUser(userToFollow);
+            }
+            else
+            {
+                gui.alert("No user selected! Choose one from the side bar.", "ERROR");
+            }
+        }
         else
         {
-            System.out.println("NO");
+            for (int i = 0; i < MAX_MESSAGES; i++)
+            {
+                if (username.equals(gui.getUser(i).getText()))
+                {
+                    gui.getUser(i).setBackground(Color.ORANGE);
+                }
+                else
+                {
+                    gui.getUser(i).setBackground(Color.WHITE);
+                }
+                
+                if (gui.getUser(i) == e.getSource())
+                {
+                    //gui.alert(gui.getUser(i).getText(), "HI");
+                    gui.getUser(i).setBackground(Color.CYAN);
+                    gui.filterByUser(gui.getUser(i));
+                }
+            }
         }
     }
 
@@ -91,9 +127,9 @@ public class Twooter implements ActionListener, UpdateListener
         }
     }
 
-    public boolean checkForFile()
+    public boolean checkForFile(String filename)
     {
-        if (readFromFile("username") == null || readFromFile("token") == null)
+        if (readFromFile(filename) == null)
         {
             return false;
         }
@@ -103,18 +139,25 @@ public class Twooter implements ActionListener, UpdateListener
         }
     }
 
-    public String readFromFile(String type)
+    public String readFromFile(String name)
     {
         try
         {
-            txtFile = type + ".txt";
+            txtFile = name + ".txt";
             FileReader fileReader = new FileReader(txtFile);
             BufferedReader textReader = new BufferedReader(fileReader);
-            String output = textReader.readLine();
+            String output = "";
+            String result = "";
+
+            do
+            {
+                result += output;
+                output = textReader.readLine();
+            } while(output != null);
 
             textReader.close();
 
-            return output;
+            return result;
         }
         catch (IOException e)
         {
@@ -132,6 +175,27 @@ public class Twooter implements ActionListener, UpdateListener
             FileWriter newFile = new FileWriter(txtFile, false);
             BufferedWriter printFile = new BufferedWriter(newFile);
             printFile.write(input);
+
+            printFile.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Creation Error: " + e.getMessage());
+        }
+    }
+
+    public void writeToFile(String name, String input)
+    {
+        try
+        {
+            txtFile = name + ".txt";
+        
+            FileWriter newFile = new FileWriter(txtFile, true);
+            BufferedWriter printFile = new BufferedWriter(newFile);
+
+            printFile.write(input);
+            printFile.newLine();
+
 
             printFile.close();
         }
@@ -210,15 +274,18 @@ public class Twooter implements ActionListener, UpdateListener
     {
         updateMessagesList();
 
-        System.out.println("Getting messages...");
-        if (gui.isNewMessage(listOfMessages[0].message, listOfMessages[0].name, listOfMessages[0].id))
+        if (gui.getSelectedUsername() == null)
         {
-            retrieveMessages();
-            getUsers();
-        }
-        else
-        {
-            System.out.println("No new messages.");
+            System.out.println("Getting messages...");
+            if (gui.isNewMessage(listOfMessages[0].message, listOfMessages[0].name, listOfMessages[0].id))
+            {
+                retrieveMessages();
+                getUsers();
+            }
+            else
+            {
+                System.out.println("No new messages.");
+            }
         }
     }
     
@@ -243,7 +310,35 @@ public class Twooter implements ActionListener, UpdateListener
         for (int i = 0; i < MAX_MESSAGES; i++)
         {
             //System.out.println("int i: " + i);
-            gui.listUsers(i, listOfMessages[i].name);
+            gui.listUsers(i, listOfMessages[i].name, username);
+        }
+    }
+
+    public void followUser(String user)
+    {
+        String check;
+        boolean doesFileExist;
+
+        if (!user.equals(username))
+        {
+            doesFileExist = checkForFile("following");
+
+            if (!doesFileExist)
+            {
+                createNewFile("following", "");
+            }
+            
+            check = readFromFile("following");
+
+            if (!check.contains(user))
+            {
+                writeToFile("following", user);
+                gui.alert("You are now following " + user, "Follow Confirmation");
+            }
+            else
+            {
+                gui.alert("You are already following " + user, "Follow Denied");
+            }
         }
     }
 }

@@ -16,9 +16,11 @@ public class TwooterGUI
     private BoxLayout layoutIP;
     private BoxLayout layoutPP;
 
+    private JButton home;
     private JButton send;
     private JButton submit;
     private JButton search;
+    private JButton follow;
 
     private JFrame window;
 
@@ -51,31 +53,38 @@ public class TwooterGUI
         messageList = new JScrollPane(postPanel);
         main = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, userList, messageList);
 
-        messageBox = new JTextField();
-        usernameBox = new JTextField();
-        search = new JButton("Search");
-        send = new JButton("Send");
-        submit = new JButton("Submit");
-
-        submit.setFont(buttonFont);
-
-        layoutUP = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
+        //layoutUP = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
         layoutMP = new BoxLayout(messagesPanel, BoxLayout.Y_AXIS);
         layoutIP = new BoxLayout(inputPanel, BoxLayout.Y_AXIS);
         layoutPP = new BoxLayout(postPanel, BoxLayout.Y_AXIS);
 
-        usersPanel.setLayout(layoutUP);
+        GridLayout templayoutUP = new GridLayout(50, 1);
+
+        usersPanel.setLayout(templayoutUP);
         messagesPanel.setLayout(layoutMP);
         inputPanel.setLayout(layoutIP);
         postPanel.setLayout(layoutPP);
+
+        messageBox = new JTextField();
+        usernameBox = new JTextField();
+
+        home = new JButton("Home");
+        search = new JButton("Search");
+        send = new JButton("Send");
+        submit = new JButton("Submit");
+        follow = new JButton("Follow");
+
+        submit.setFont(buttonFont);
 
         postPanel.add(messageBox);
         messageBox.setPreferredSize(new Dimension(700, 250));
         messageBox.setFont(inputFont);
         postPanel.add(send);
         postPanel.add(search);
+        postPanel.add(follow);
         postPanel.add(inputPanel);
         postPanel.add(messagesPanel);
+        usersPanel.add(home);
 
         messages = new JTextArea[MAX_MESSAGES];
         users = new JButton[MAX_MESSAGES];
@@ -83,6 +92,8 @@ public class TwooterGUI
         send.addActionListener(twooter);
         search.addActionListener(twooter);
         submit.addActionListener(twooter);
+        home.addActionListener(twooter);
+        follow.addActionListener(twooter);
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -109,6 +120,16 @@ public class TwooterGUI
     public JButton getSubmit()
     {
         return submit;
+    }
+
+    public JButton getHome()
+    {
+        return home;
+    }
+
+    public JButton getFollow()
+    {
+        return follow;
     }
 
     public String getInputMessage()
@@ -155,7 +176,6 @@ public class TwooterGUI
         messageList.getVerticalScrollBar().setUnitIncrement(20);
         main.setResizeWeight(0.1);
         loginPanel.setVisible(false);
-        //getUsers();
     }
 
     public void outputMessageStream(int i, String message, String username, String id)
@@ -187,7 +207,8 @@ public class TwooterGUI
     public boolean isNewMessage(String inputMessage, String inputUsername, String inputID)
     {
         String latestMessage = "@" + inputUsername + ": " + inputMessage + "\n\n" + inputID;
-        if (latestMessage.equals(messages[0].getText()))
+        String message = "Normally I don't condone censorship, but that wall of text was probably an image, and I'm not competent enough to know how to show you images. But if it makes you feel any better, it was probably very pretty or funny or cool or something.";
+        if (latestMessage.equals(messages[0].getText()) || latestMessage.equals(message))
         {
             return false;
         }
@@ -202,24 +223,18 @@ public class TwooterGUI
         return messagesPanel;
     }
 
-    // public JButton getUser(int index)
-    // {
-    //     return users[index];
-    // }
-
     public void alert(String error, String title)
     {
         JOptionPane.showMessageDialog(null, error, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void listUsers(int index, String username)
+    public void listUsers(int index, String username, String currentUser)
     {
         if (index == 0)
         {
             usersPanel.setVisible(false);
         }
 
-        users[index].setBackground(Color.WHITE);
         int i = 0;
         boolean isValid = true;
 
@@ -246,6 +261,15 @@ public class TwooterGUI
             users[index].setVisible(false);
         }
 
+        if (currentUser.equals(users[i].getText()))
+        {
+            users[i].setBackground(Color.ORANGE);
+        }
+        else
+        {
+            users[i].setBackground(Color.WHITE);
+        }
+
         usersPanel.add(users[index]);
 
         if (index == MAX_MESSAGES - 1)
@@ -267,10 +291,6 @@ public class TwooterGUI
                 messages[i].setVisible(false);
                 count++;
             }
-            else
-            {
-                System.out.println(messages[i].getText());
-            }
         }
 
         messageBox.setText(null);
@@ -284,11 +304,51 @@ public class TwooterGUI
                 messages[i].setVisible(true);
             }
         }
-
     }
 
-    public void printSearchQuery()
+    public JButton getUser(int index)
     {
-        //
+        return users[index];
+    }
+
+    public void filterByUser(JButton user)
+    {
+        int count = 0;
+
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+            messages[i].setVisible(true);
+
+            if (!messages[i].getText().contains(user.getText()) || !(messages[i].getText().indexOf(user.getText()) == 1))
+            {
+                messages[i].setVisible(false);
+                count++;
+            }
+        }
+
+        if (count == MAX_MESSAGES)
+        {
+            alert("This user hasn't posted anything recently.", "No results");
+
+            user.setBackground(Color.WHITE);
+
+            for (int i = 0; i < MAX_MESSAGES; i++)
+            {
+                messages[i].setVisible(true);
+            }
+        }
+    }
+
+    public String getSelectedUsername()
+    {
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+            if (users[i].getBackground() == Color.CYAN)
+            {
+                return users[i].getText();
+            }
+        }
+
+        return null;
     }
 }
