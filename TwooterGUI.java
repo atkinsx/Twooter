@@ -18,6 +18,7 @@ public class TwooterGUI
 
     private JButton send;
     private JButton submit;
+    private JButton search;
 
     private JFrame window;
 
@@ -52,8 +53,10 @@ public class TwooterGUI
 
         messageBox = new JTextField();
         usernameBox = new JTextField();
+        search = new JButton("Search");
         send = new JButton("Send");
         submit = new JButton("Submit");
+
         submit.setFont(buttonFont);
 
         layoutUP = new BoxLayout(usersPanel, BoxLayout.Y_AXIS);
@@ -70,6 +73,7 @@ public class TwooterGUI
         messageBox.setPreferredSize(new Dimension(700, 250));
         messageBox.setFont(inputFont);
         postPanel.add(send);
+        postPanel.add(search);
         postPanel.add(inputPanel);
         postPanel.add(messagesPanel);
 
@@ -77,6 +81,7 @@ public class TwooterGUI
         users = new JButton[MAX_MESSAGES];
 
         send.addActionListener(twooter);
+        search.addActionListener(twooter);
         submit.addActionListener(twooter);
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,6 +99,11 @@ public class TwooterGUI
     public JButton getSend()
     {
         return send;
+    }
+
+    public JButton getSearch()
+    {
+        return search;
     }
 
     public JButton getSubmit()
@@ -120,10 +130,10 @@ public class TwooterGUI
 
     public void setupLoginWindow()
     {
-        JLabel title = new JLabel("twooter");
-        JLabel subtitle = new JLabel("profeshanul soshul meedeeuh for scc.110");
-        Font titleFont = new Font("Comic Sans", Font.PLAIN, 150);
-        Font subtitleFont = new Font("Comic Sans", Font.PLAIN, 50);
+        JLabel title = new JLabel("Twooter");
+        JLabel subtitle = new JLabel("Not-so professional social media for SCC110");
+        Font titleFont = new Font("Arial", Font.PLAIN, 150);
+        Font subtitleFont = new Font("Arial", Font.PLAIN, 40);
 
         title.setFont(titleFont);
         subtitle.setFont(subtitleFont);
@@ -148,7 +158,7 @@ public class TwooterGUI
         //getUsers();
     }
 
-    public void outputMessageStream(int i, String message, String username)
+    public void outputMessageStream(int i, String message, String username, String id)
     {
         if (i == 0)
         {
@@ -160,11 +170,12 @@ public class TwooterGUI
             message = "Normally I don't condone censorship, but that wall of text was probably an image, and I'm not competent enough to know how to show you images. But if it makes you feel any better, it was probably very pretty or funny or cool or something.";
         }
 
-        String newText = username + ": " + message;
+        String newText = "@" + username + ": " + message + "\n\n" + id;
         messages[i].setText(newText);
         messages[i].setLineWrap(true);
         messages[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
         messages[i].setFont(messageFont);
+
         messagesPanel.add(messages[i]);
 
         if (i == MAX_MESSAGES - 1)
@@ -173,16 +184,15 @@ public class TwooterGUI
         }
     }
 
-    public boolean isNewMessage(String inputMessage, String inputUsername)
+    public boolean isNewMessage(String inputMessage, String inputUsername, String inputID)
     {
-        String latestMessage = inputUsername + ": " + inputMessage;
+        String latestMessage = "@" + inputUsername + ": " + inputMessage + "\n\n" + inputID;
         if (latestMessage.equals(messages[0].getText()))
         {
             return false;
         }
         else
         {
-            //System.out.println(latestMessage + " != " + messages[0].getText());
             return true;
         }
     }
@@ -242,5 +252,23 @@ public class TwooterGUI
         {
             usersPanel.setVisible(true);
         }
+    }
+
+    public void filterMessages()
+    {
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+            if (!messages[i].getText().contains(messageBox.getText()))
+            {
+                messages[i].setVisible(false);
+            }
+
+            messageBox.setText(null);
+        }
+    }
+
+    public void printSearchQuery()
+    {
+        //
     }
 }

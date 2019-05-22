@@ -32,7 +32,6 @@ public class Twooter implements ActionListener, UpdateListener
 
     public void actionPerformed(ActionEvent e)
     {
-        System.out.println(e.getSource());
         if (e.getSource() == gui.getSubmit())
         {
             if (checkIfIsUp())
@@ -52,6 +51,10 @@ public class Twooter implements ActionListener, UpdateListener
         else if (e.getSource() == gui.getSend())
         {
             sendMessage();
+        }
+        else if (e.getSource() == gui.getSearch())
+        {
+            gui.filterMessages();
         }
         else
         {
@@ -182,7 +185,7 @@ public class Twooter implements ActionListener, UpdateListener
     {
         for (int i = 0; i < MAX_MESSAGES; i++)
         {
-            gui.outputMessageStream(i, listOfMessages[i].message, listOfMessages[i].name);
+            gui.outputMessageStream(i, listOfMessages[i].message, listOfMessages[i].name, listOfMessages[i].id);
         }
     }
 
@@ -208,7 +211,7 @@ public class Twooter implements ActionListener, UpdateListener
         updateMessagesList();
 
         System.out.println("Getting messages...");
-        if (gui.isNewMessage(listOfMessages[0].message, listOfMessages[0].name))
+        if (gui.isNewMessage(listOfMessages[0].message, listOfMessages[0].name, listOfMessages[0].id))
         {
             retrieveMessages();
             getUsers();
