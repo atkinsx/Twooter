@@ -209,16 +209,12 @@ public class TwooterGUI
             usersPanel.setVisible(false);
         }
 
-        usersPanel.remove(users[index]);
-        //users[index].setText(username);
         users[index].setBackground(Color.WHITE);
-        //users[i].setVisible(false);
         int i = 0;
         boolean isValid = true;
 
         while (!users[i].getText().equals("empty") && isValid)
         {
-            System.out.println(username + ": " + i);
             if(username.equals(users[i].getText()) || i >= MAX_MESSAGES)
             {
                 isValid = false;
@@ -231,8 +227,13 @@ public class TwooterGUI
 
         if (users[i].getText().equals("empty") && isValid)
         {
-            System.out.println(username + ": " + i);
             users[i].setText(username);
+            users[i].setVisible(true);
+        }
+
+        if (users[index].getText().equals("empty"))
+        {
+            users[index].setVisible(false);
         }
 
         usersPanel.add(users[index]);

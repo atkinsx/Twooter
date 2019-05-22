@@ -41,11 +41,12 @@ public class Twooter implements ActionListener, UpdateListener
                 gui.setupMainWindow();
                 updateMessagesList();
                 retrieveMessages();
+                getUsers();
                 client.enableLiveFeed();
             }
             else
             {
-                //
+                gui.alert("Error: Server appears to be down, try again later.", "ERROR");
             }
         }
         else if (e.getSource() == gui.getSend())
