@@ -6,6 +6,7 @@ import javax.swing.*;
 public class TwooterGUI
 {
     private static final int MAX_MESSAGES = 30;
+    private static final int MAX_FOLLOWING = 30;
 
     private Font inputFont = new Font("Arial", Font.PLAIN, 40);
     private Font buttonFont = new Font("Arial", Font.PLAIN, 24);
@@ -87,7 +88,7 @@ public class TwooterGUI
         usersPanel.add(home);
 
         messages = new JTextArea[MAX_MESSAGES];
-        users = new JButton[MAX_MESSAGES];
+        users = new JButton[MAX_MESSAGES + MAX_FOLLOWING];
 
         send.addActionListener(twooter);
         search.addActionListener(twooter);
@@ -104,6 +105,8 @@ public class TwooterGUI
             messages[i] = new JTextArea();
             users[i] = new JButton("empty");
             users[i].addActionListener(twooter);
+            users[i + MAX_FOLLOWING] = new JButton("empty");
+            users[i + MAX_FOLLOWING].addActionListener(twooter);
         }
     }
 
@@ -240,7 +243,7 @@ public class TwooterGUI
 
         while (!users[i].getText().equals("empty") && isValid)
         {
-            if(username.equals(users[i].getText()) || i >= MAX_MESSAGES)
+            if(username.equals(users[i].getText()) || i >= MAX_MESSAGES + MAX_FOLLOWING)
             {
                 isValid = false;
             }
@@ -341,7 +344,7 @@ public class TwooterGUI
 
     public String getSelectedUsername()
     {
-        for (int i = 0; i < MAX_MESSAGES; i++)
+        for (int i = 0; i < MAX_MESSAGES + MAX_FOLLOWING; i++)
         {
             if (users[i].getBackground() == Color.CYAN)
             {
@@ -350,5 +353,36 @@ public class TwooterGUI
         }
 
         return null;
+    }
+
+    public void outputFollowing(String input)
+    {
+        String saveString;
+        int startPointer;
+        int endPointer;
+        int i = 0;
+
+        while (!input.equals(""))//startPointer != null && endPointer != null)
+        {
+            startPointer = input.indexOf('&');
+            endPointer = input.indexOf('/');
+            saveString = input.substring(startPointer + 1, endPointer);
+            addUserToList(saveString, "following");
+            input = input.substring(endPointer + 1);
+            i++;
+        }
+    }
+
+    public void addUserToList(String input, String type)
+    {
+        listUsers(1, input, "N/A");
+
+        // for (int i = 0; i < MAX_MESSAGES + MAX_FOLLOWING; i++)
+        // {
+        //     if (input.equals(users[i].getText()))
+        //     {
+        //         users[i].setBackground(Color.GREEN);
+        //     }
+        // }
     }
 }

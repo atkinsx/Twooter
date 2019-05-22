@@ -41,6 +41,7 @@ public class Twooter implements ActionListener, UpdateListener
                 updateMessagesList();
                 retrieveMessages();
                 getUsers();
+                getFollowing();
                 client.enableLiveFeed();
             }
             else
@@ -90,7 +91,6 @@ public class Twooter implements ActionListener, UpdateListener
                 
                 if (gui.getUser(i) == e.getSource())
                 {
-                    //gui.alert(gui.getUser(i).getText(), "HI");
                     gui.getUser(i).setBackground(Color.CYAN);
                     gui.filterByUser(gui.getUser(i));
                 }
@@ -332,7 +332,7 @@ public class Twooter implements ActionListener, UpdateListener
 
             if (!check.contains(user))
             {
-                writeToFile("following", user);
+                writeToFile("following", "&" + user + "/");
                 gui.alert("You are now following " + user, "Follow Confirmation");
             }
             else
@@ -340,5 +340,12 @@ public class Twooter implements ActionListener, UpdateListener
                 gui.alert("You are already following " + user, "Follow Denied");
             }
         }
+    }
+
+    public void getFollowing()
+    {
+        String userFollows = readFromFile("following");
+        gui.outputFollowing(userFollows);
+        getUsers();
     }
 }
